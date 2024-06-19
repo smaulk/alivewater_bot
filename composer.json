@@ -1,0 +1,11 @@
+{
+  "require": {
+    "pecee/simple-router": "*",
+    "ext-curl": "*"
+  },
+  "autoload": {
+    "psr-4": {
+      "App\\": "src/"
+    }
+  }
+}
