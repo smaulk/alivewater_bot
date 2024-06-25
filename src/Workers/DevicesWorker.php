@@ -13,13 +13,15 @@ class DevicesWorker extends Worker
     }
 
 
-    public function getDevices()
+    public function getDevices(): string
     {
         $resp = Curl::get($this->getUrl('devices'),[], $this->userDto->auth->token);
-//        var_dump($resp);
-        foreach ($resp->devices as $device) {
-            echo $device->Info->Address;
+        $devices = [];
+        foreach ($resp['devices'] as $device) {
+            $devices[] = [$device['Info']['Address'] => $device['DeviceState']['Coins'].'тг'];
         }
+
+        return json_encode($devices, JSON_PRETTY_PRINT);
     }
 
 }

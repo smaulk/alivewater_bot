@@ -2,7 +2,7 @@
 
 namespace App\Factories;
 
-use App\Interfaces\DtoMessage;
+use App\Contracts\DtoContract;
 use App\Dto\CallbackDto;
 use App\Dto\TextDto;
 use Exception;
@@ -13,7 +13,7 @@ class DtoFactory
     /**
      * @throws Exception
      */
-    public static function make(Request $request): DtoMessage
+    public static function make(Request $request): DtoContract
     {
         $body = (array) $request->getInputHandler()->all();
         return match (true) {
@@ -27,7 +27,8 @@ class DtoFactory
     {
         return !empty($body['message'])
             && !empty($body['message']['chat']['id'])
-            && !empty($body['message']['text']);
+            && !empty($body['message']['text'])
+            && !empty($body['message']['message_id']);
     }
 
     private static function isCallback(array $body): bool

@@ -1,28 +1,32 @@
 <?php
-namespace App\Handlers;
+namespace App\Handlers\Base;
 
-use App\Interfaces\DtoMessage;
 use App\Enums\State;
-use App\Handler;
+use App\Handlers\Handler;
+use App\Contracts\DtoContract;
 
 final readonly class StartHandler extends Handler
 {
 
-    public static function validate(DtoMessage $dto): bool
+    public static function validate(DtoContract $dto): bool
     {
         return $dto->data === '/start';
     }
 
     public function process(): void
     {
+        $state = is_null($this->userManager->read())
+            ? State::Login
+            : State::StartMenu;
+
         $this->telegram->send($this->method, [
             'chat_id' => $this->fromId,
             'text'    => $this->getText(),
             'reply_markup' => [
                 'keyboard'          => [
                     [
-                        ['text' => State::Start->value],
-                    ],
+                        ['text' => $state->value],
+                    ]
                 ],
                 'one_time_keyboard' => true,
                 'resize_keyboard'   => true,
@@ -39,7 +43,7 @@ final readonly class StartHandler extends Handler
 TEXT;
     }
 
-    protected function parseDto(DtoMessage $dto): void
+    protected function parseDto(DtoContract $dto): void
     {
     }
 }

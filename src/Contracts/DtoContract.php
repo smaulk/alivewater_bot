@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Interfaces;
+namespace App\Contracts;
 
-interface DtoMessage
+interface DtoContract
 {
     public function __construct(array $data);
 }

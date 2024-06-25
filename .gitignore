@@ -2,5 +2,6 @@
 /.env
 /composer.lock
 /data
+/state
 /var
 /vendor

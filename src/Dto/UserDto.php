@@ -18,19 +18,18 @@ class UserDto
         $this->auth = new AuthData();
     }
 
-    public function fromJson($json): UserDto
+    public function fromArray(array $data): UserDto
     {
-        $this->username = $json->username ?? '';
-        $this->password = $json->password ?? '';
-        $this->uid = $json->uid ?? '';
-        $this->auth->token = $json->auth->token ?? '' ;
-        $this->auth->refreshToken = $json->auth->refreshToken ?? '' ;
+        $this->username = $data['username'] ?? '';
+        $this->password = $data['password'] ?? '';
+        $this->uid = $data['uid'] ?? '';
+        $this->auth->token = $data['auth']['token'] ?? '' ;
+        $this->auth->refreshToken = $data['auth']['refreshToken'] ?? '' ;
         return $this;
     }
 
-    public function toJson(): string
+    public function toArray(): array
     {
-        return json_encode($this, JSON_PRETTY_PRINT);
+        return (array) $this;
     }
-
 }

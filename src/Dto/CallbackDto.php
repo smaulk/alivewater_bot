@@ -1,9 +1,9 @@
 <?php
 namespace App\Dto;
 
-use App\Interfaces\DtoMessage;
+use App\Contracts\DtoContract;
 
-class CallbackDto implements DtoMessage
+class CallbackDto implements DtoContract
 {
     public int $fromId;
     public int $messageId;

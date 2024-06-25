@@ -3,7 +3,6 @@ namespace App\Controllers;
 
 use Pecee\Http\Request;
 use Pecee\Http\Response;
-use Pecee\Http\Input\InputHandler;
 use Pecee\SimpleRouter\SimpleRouter as Router;
 
 abstract class Controller

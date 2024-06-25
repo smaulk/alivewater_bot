@@ -3,6 +3,9 @@ namespace App\Enums;
 
 enum State: string
 {
-    case Start = "Открыть меню";
-    case Devices = "Открыть аппараты";
+    case StartMenu = "Открыть меню";
+    case Login = "Войти в аккаунт";
+    case InputUsername = "InputUsername";
+    case InputPassword = "InputPassword";
+    case Devices = "Посмотреть аппараты";
 }

@@ -2,24 +2,21 @@
 
 namespace App\Factories;
 
-use App\Handler;
+use App\Handlers\Base\NotFoundHandler;
+use App\Handlers\Base\StartMenuHandler;
 use App\Handlers\DevicesHandler;
-use App\Handlers\StartHandler;
-use App\Interfaces\DtoMessage;
+use App\Handlers\Handler;
+use App\Contracts\DtoContract;
 use Exception;
 
 class HandlerFactory
 {
-
-    /**
-     * @throws Exception
-     */
-    public static function make(DtoMessage $dto): Handler
+    public static function make(DtoContract $dto): Handler
     {
         return match (true) {
-            StartHandler::validate($dto) => new StartHandler($dto),
+            StartMenuHandler::validate($dto) => new StartMenuHandler($dto),
             DevicesHandler::validate($dto) => new DevicesHandler($dto),
-            default => throw new Exception(),
+            default => new NotFoundHandler($dto),
         };
     }
 }

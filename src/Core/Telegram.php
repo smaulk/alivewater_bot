@@ -1,11 +1,12 @@
 <?php
 namespace App\Core;
 use App\Core\Env;
+use App\Dto\ResultDto;
 use App\Enums\TelegramMethod;
 
 final class Telegram
 {
-    public function send(TelegramMethod $method, array $data): mixed
+    public function send(TelegramMethod $method, array $data): array
     {
         $uri = $this->getUri($method->value);
         return Curl::post($uri, $data);

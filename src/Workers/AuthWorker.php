@@ -45,10 +45,10 @@ final class AuthWorker extends Worker
     private function login(UserDto $dto): UserDto | null
     {
         $resp = $this->loginRequest($dto);
-        if($resp->HTTP_CODE !== 200) return null;
-        $dto->uid= $resp->User->Id;
-        $dto->auth->token = $resp->Token;
-        $dto->auth->refreshToken = $resp->Refresh;
+        if($resp['HTTP_CODE'] !== 200) return null;
+        $dto->uid= $resp['User']['Id'];
+        $dto->auth->token = $resp['Token'];
+        $dto->auth->refreshToken = $resp['Refresh'];
 
         return $dto;
     }
@@ -61,9 +61,9 @@ final class AuthWorker extends Worker
     private function refresh(UserDto $dto): UserDto | null
     {
         $resp = $this->refreshRequest($dto);
-        if($resp->HTTP_CODE !== 200) return $this->login($dto);
-        $dto->auth->token = $resp->Token;
-        $dto->auth->refreshToken = $resp->Refresh;
+        if($resp['HTTP_CODE'] !== 200) return $this->login($dto);
+        $dto->auth->token = $resp['Token'];
+        $dto->auth->refreshToken = $resp['Refresh'];
         return $dto;
     }
 
@@ -72,7 +72,7 @@ final class AuthWorker extends Worker
      * @param UserDto $dto
      * @return array
      */
-    private function loginRequest(UserDto $dto)
+    private function loginRequest(UserDto $dto): array
     {
         $data = [
             'Username' => $dto->username,
@@ -86,7 +86,7 @@ final class AuthWorker extends Worker
      * @param UserDto $dto
      * @return array
      */
-    private function refreshRequest(UserDto $dto)
+    private function refreshRequest(UserDto $dto): array
     {
         $data = [
             'Refresh' => $dto->auth->refreshToken,
@@ -102,7 +102,7 @@ final class AuthWorker extends Worker
     private function checkTokenValidity(string $token): bool
     {
         $resp = Curl::get($this->getUrl('profile'), [], $token);
-        if($resp->HTTP_CODE === 200) return true;
+        if($resp['HTTP_CODE']=== 200) return true;
         return false;
     }
 }
