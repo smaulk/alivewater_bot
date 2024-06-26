@@ -21,7 +21,7 @@ final readonly class SelectDeviceHandler extends Handler
 
     public function process(): void
     {
-        $device = (new DeviceWorker($this->userManager->read(), $this->uuid));
+        $device = (new DeviceWorker($this->userManager->read(), $this->uuid))->getInfo();
 
         $address = $device['Address'];
         $coins = $device['Coins'];
