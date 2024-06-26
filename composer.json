@@ -1,7 +1,8 @@
 {
   "require": {
     "pecee/simple-router": "*",
-    "ext-curl": "*"
+    "ext-curl": "*",
+    "ext-openssl": "*"
   },
   "autoload": {
     "psr-4": {

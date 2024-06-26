@@ -2,6 +2,7 @@
 
 namespace App\Handlers\Auth;
 
+use App\Core\Helper;
 use App\Dto\UserDto;
 use App\Enums\State;
 use App\Enums\TelegramMethod;
@@ -58,7 +59,7 @@ final readonly class LoginStateHandler extends Handler
 
     private function inputPassword(int $messageId): void
     {
-        $this->userDto->password = $this->input;
+        $this->userDto->password = Helper::encrypt($this->input);
         $this->stateManager->delete();
         $this->deleteMessage();
         $this->telegram->send(TelegramMethod::Edit, [

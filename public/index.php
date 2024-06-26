@@ -10,8 +10,9 @@ require __DIR__ . '/../vendor/autoload.php';
 
 Router::setDefaultNamespace('App\Controllers');
 Router::post(
-    '/'.Env::get('ROUTE'),
-    [MainController::class, 'run']
+    '/'
+//    .Env::get('ROUTE')
+    , [MainController::class, 'run']
 )->addMiddleware(AuthMiddleware::class);
 
 Router::error(function(Request $request, Exception $exception)  {

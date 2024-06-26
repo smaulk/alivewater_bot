@@ -22,7 +22,7 @@ class AuthMiddleware implements IMiddleware
         if(!is_null($handler))
         {
             $handler->process();
-            throw new Exception();
+            throw new Exception('Пользователь не авторизован!');
         }
         $auth = new Auth($request->dto);
         if (!$auth->check()) {

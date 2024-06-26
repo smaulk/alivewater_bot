@@ -8,4 +8,5 @@ enum State: string
     case InputUsername = "InputUsername";
     case InputPassword = "InputPassword";
     case Devices = "Посмотреть аппараты";
+    case SelectDevice = "sdv";
 }

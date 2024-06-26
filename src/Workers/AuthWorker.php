@@ -3,6 +3,7 @@
 namespace App\Workers;
 
 use App\Core\Curl;
+use App\Core\Helper;
 use App\Dto\UserDto;
 
 final class AuthWorker extends Worker
@@ -76,7 +77,7 @@ final class AuthWorker extends Worker
     {
         $data = [
             'Username' => $dto->username,
-            'Password' => $dto->password,
+            'Password' => Helper::decrypt($dto->password),
         ];
         return Curl::post($this->getUrl('auth/signin'), $data);
     }
@@ -104,5 +105,10 @@ final class AuthWorker extends Worker
         $resp = Curl::get($this->getUrl('profile'), [], $token);
         if($resp['HTTP_CODE']=== 200) return true;
         return false;
+
+//        $payload =  base64_decode(explode('.', $token)[1]);
+//        preg_match('/"exp":(\d+)/', $payload, $matches);
+//
+//        return time() >= (int)$matches[1];
     }
 }

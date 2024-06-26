@@ -3,7 +3,9 @@
 namespace App\Workers;
 
 use App\Core\Curl;
+use App\Core\Helper;
 use App\Dto\UserDto;
+use App\Managers\JsonManager;
 
 class DevicesWorker extends Worker
 {
@@ -13,15 +15,19 @@ class DevicesWorker extends Worker
     }
 
 
-    public function getDevices(): string
+    public function getDevices(): array
     {
         $resp = Curl::get($this->getUrl('devices'),[], $this->userDto->auth->token);
+        //(new JsonManager(Helper::basePath().'/devices.json'))->writeJson($resp);
         $devices = [];
         foreach ($resp['devices'] as $device) {
-            $devices[] = [$device['Info']['Address'] => $device['DeviceState']['Coins'].'тг'];
+            $id = $device['Id'];
+            $address = $device['Info']['Address'];
+            $pos = strpos($address, ',');
+            $devices[$id] = substr($address, $pos + 1);
         }
 
-        return json_encode($devices, JSON_PRETTY_PRINT);
+        return $devices;
     }
 
 }

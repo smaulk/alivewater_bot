@@ -18,7 +18,7 @@ final readonly class NotFoundHandler extends Handler
         $this->telegram->send($this->method, [
             'chat_id'    => $this->fromId,
             'message_id' => $this->messageId,
-            'text'       => "Я тебя не понимаю :(\nПопробуй еще раз",
+            'text'       => "Я вас не понимаю :(\nПопробуйте еще раз",
         ]);
     }
 

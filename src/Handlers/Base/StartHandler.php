@@ -38,7 +38,7 @@ final readonly class StartHandler extends Handler
     {
         return <<<TEXT
 Привет!
-Я помогу отслеживать состояние аппаратов на Alivewater!
+Я помогу отслеживать состояние аппаратов "Живая вода"!
 Выберите команду из меню
 TEXT;
     }

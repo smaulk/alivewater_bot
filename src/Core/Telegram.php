@@ -1,7 +1,6 @@
 <?php
 namespace App\Core;
 use App\Core\Env;
-use App\Dto\ResultDto;
 use App\Enums\TelegramMethod;
 
 final class Telegram

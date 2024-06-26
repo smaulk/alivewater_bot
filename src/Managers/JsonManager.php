@@ -11,7 +11,7 @@ class JsonManager
         $this->path = $path;
     }
 
-    protected function readJson(): array|null
+    public function readJson(): array|null
     {
         if (file_exists($this->path)) {
             $file = file_get_contents($this->path);
@@ -20,7 +20,7 @@ class JsonManager
         return null;
     }
 
-    protected function writeJson(array $data): void
+    public function writeJson(array $data): void
     {
         $data = json_encode($data, JSON_PRETTY_PRINT);
         file_put_contents($this->path, $data);

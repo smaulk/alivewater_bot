@@ -2,12 +2,11 @@
 
 namespace App\Factories;
 
+use App\Contracts\DtoContract;
 use App\Handlers\Base\NotFoundHandler;
 use App\Handlers\Base\StartMenuHandler;
-use App\Handlers\DevicesHandler;
+use App\Handlers\Devices\DevicesHandler;
 use App\Handlers\Handler;
-use App\Contracts\DtoContract;
-use Exception;
 
 class HandlerFactory
 {
