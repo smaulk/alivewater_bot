@@ -7,7 +7,7 @@ use App\Core\Helper;
 use App\Dto\UserDto;
 use App\Managers\JsonManager;
 
-class UserWorker extends Worker
+final class UserWorker extends Worker
 {
     protected function getPath(): string
     {

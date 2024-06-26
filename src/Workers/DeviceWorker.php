@@ -5,7 +5,7 @@ namespace App\Workers;
 use App\Core\Curl;
 use App\Dto\UserDto;
 
-class DeviceWorker extends Worker
+final class DeviceWorker extends Worker
 {
 
     private string $uuid;

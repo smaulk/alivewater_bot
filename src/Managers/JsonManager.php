@@ -20,10 +20,10 @@ class JsonManager
         return null;
     }
 
-    public function writeJson(array $data): void
+    public function writeJson(array $data, bool $append = false): void
     {
         $data = json_encode($data, JSON_PRETTY_PRINT);
-        file_put_contents($this->path, $data);
+        file_put_contents($this->path, $data, $append ? FILE_APPEND : 0);
     }
 
     public function delete(): void
