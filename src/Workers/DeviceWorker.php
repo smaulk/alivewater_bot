@@ -27,7 +27,7 @@ final class DeviceWorker extends Worker
         $device = [];
         $device['Coins'] = $resp['DeviceState']['Coins'];
         $device['Address'] = $resp['Info']['Address'];
-        $date = substr($resp['DeviceState']['LastEncash']['Dts'],0, -4);
+        $date = substr($resp['DeviceState']['LastEncash']['Dts'],0, -3);
         $device['LastEncash']['Date'] = date("Y-m-d H:i:s", $date);
         $device['LastEncash']['Coins'] = $resp['DeviceState']['LastEncash']['Coins'];
 
