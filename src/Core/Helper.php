@@ -24,14 +24,10 @@ final class Helper
         $key = Env::get('ENCRYPT_KEY');
         // Генерация инициализационного вектора (IV)
         $iv = openssl_random_pseudo_bytes(openssl_cipher_iv_length('aes-256-cbc'));
-
         // Шифрование данных
         $encryptedData = openssl_encrypt($data, 'aes-256-cbc', $key, 0, $iv);
-
         // Комбинирование IV и зашифрованных данных
-        $encryptedDataWithIv = base64_encode($iv . $encryptedData);
-
-        return $encryptedDataWithIv;
+        return base64_encode($iv . $encryptedData);
     }
 
     public static function decrypt($encrypted): string
@@ -39,15 +35,11 @@ final class Helper
         $key = Env::get('ENCRYPT_KEY');
         // Раскодирование закодированных данных
         $encryptedDataWithIv = base64_decode($encrypted);
-
         // Извлечение IV и зашифрованных данных
         $ivLength = openssl_cipher_iv_length('aes-256-cbc');
         $iv = substr($encryptedDataWithIv, 0, $ivLength);
         $encryptedData = substr($encryptedDataWithIv, $ivLength);
-
         // Дешифрование данных
-        $decryptedData = openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
-
-        return $decryptedData;
+        return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
     }
 }

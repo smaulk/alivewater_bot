@@ -9,7 +9,7 @@ abstract class Worker
     private string $apiUrl = "https://cabinet.api.alivewater.online/";
     protected UserDto $userDto;
 
-    protected function getUrl(string $route): string
+    protected function getUrl(string $route = null): string
     {
         return $this->apiUrl.$this->getPath().'/'.$route;
     }

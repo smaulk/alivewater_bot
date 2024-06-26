@@ -10,6 +10,7 @@ use Pecee\Http\Request;
 
 class DtoFactory
 {
+
     /**
      * @throws Exception
      */
@@ -19,7 +20,7 @@ class DtoFactory
         return match (true) {
             self::isTextMessage($body) => new TextDto($body),
             self::isCallback($body) => new CallbackDto($body),
-            default => throw new Exception(),
+            default => throw new Exception("Ошибка: неизвестный формат запроса!"),
         };
     }
 

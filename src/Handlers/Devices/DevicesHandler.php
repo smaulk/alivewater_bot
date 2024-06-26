@@ -5,7 +5,7 @@ namespace App\Handlers\Devices;
 use App\Contracts\DtoContract;
 use App\Enums\State;
 use App\Handlers\Handler;
-use App\Workers\DevicesWorker;
+use App\Workers\UserWorker;
 
 final readonly class DevicesHandler extends Handler
 {
@@ -17,7 +17,7 @@ final readonly class DevicesHandler extends Handler
 
     public function process(): void
     {
-        $devices = (new DevicesWorker($this->userManager->read()))->getDevices();
+        $devices = (new UserWorker($this->userManager->read()))->getDevices();
 
         $this->telegram->send($this->method, [
             'chat_id' => $this->fromId,

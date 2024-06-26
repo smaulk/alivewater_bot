@@ -5,6 +5,7 @@ namespace App\Handlers\Devices;
 use App\Contracts\DtoContract;
 use App\Enums\State;
 use App\Handlers\Handler;
+use App\Workers\DeviceWorker;
 
 final readonly class SelectDeviceHandler extends Handler
 {
@@ -20,7 +21,25 @@ final readonly class SelectDeviceHandler extends Handler
 
     public function process(): void
     {
-        // TODO: Implement process() method.
+        $device = (new DeviceWorker($this->userManager->read(), $this->uuid));
+
+        $address = $device['Address'];
+        $coins = $device['Coins'];
+        $encashDate =  $device['LastEncash']['Date'];
+        $encashCoins = $device['LastEncash']['Coins'];
+
+        $text = <<<TEXT
+Адрес: $address
+Количество монет: $coins тг.
+Последняя инкасация:
+$encashDate - $encashCoins тг.
+TEXT;
+
+        $this->telegram->send($this->method, [
+            'chat_id'      => $this->fromId,
+            'message_id'   => $this->messageId,
+            'text'         => $text,
+        ]);
     }
 
     protected function parseDto(DtoContract $dto): void
