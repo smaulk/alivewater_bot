@@ -18,20 +18,15 @@ final class AuthWorker extends Worker
      * Производит авторизацию, проверяет и получает токены.
      * @return UserDto|null При успехе вовзращается UserDto, если войти не удалось - null.
      */
-    public function auth(): UserDto | null
+    public function auth(): UserDto|null
     {
-        if(empty($this->userDto->username) || empty($this->userDto->password))
-        {
+        if (empty($this->userDto->username) || empty($this->userDto->password)) {
             return null;
         }
-
-        if(empty($this->userDto->auth->token) || empty($this->userDto->auth->refreshToken))
-        {
+        if (empty($this->userDto->auth->token) || empty($this->userDto->auth->refreshToken)) {
             return $this->login($this->userDto);
         }
-
-        if(!$this->checkTokenValidity($this->userDto->auth->token))
-        {
+        if ($this->isJwtTokenExpired($this->userDto->auth->token)) {
             return $this->refresh($this->userDto);
         }
 
@@ -43,11 +38,11 @@ final class AuthWorker extends Worker
      * @param UserDto $dto
      * @return UserDto|null
      */
-    private function login(UserDto $dto): UserDto | null
+    private function login(UserDto $dto): UserDto|null
     {
         $resp = $this->loginRequest($dto);
-        if($resp['HTTP_CODE'] !== 200) return null;
-        $dto->uid= $resp['User']['Id'];
+        if ($resp['HTTP_CODE'] !== 200) return null;
+        $dto->uid = $resp['User']['Id'];
         $dto->auth->token = $resp['Token'];
         $dto->auth->refreshToken = $resp['Refresh'];
 
@@ -59,10 +54,10 @@ final class AuthWorker extends Worker
      * @param UserDto $dto
      * @return UserDto|null
      */
-    private function refresh(UserDto $dto): UserDto | null
+    private function refresh(UserDto $dto): UserDto|null
     {
         $resp = $this->refreshRequest($dto);
-        if($resp['HTTP_CODE'] !== 200) return $this->login($dto);
+        if ($resp['HTTP_CODE'] !== 200) return $this->login($dto);
         $dto->auth->token = $resp['Token'];
         $dto->auth->refreshToken = $resp['Refresh'];
         return $dto;
@@ -96,19 +91,16 @@ final class AuthWorker extends Worker
     }
 
     /**
-     * Проверка валидности jwt токена.
-     * @param string $token
-     * @return bool
+     * Проверка, что jwt токен истек.
+     * @param string $token jwt токен
+     * @return bool true если истек, false если валидный
      */
-    private function checkTokenValidity(string $token): bool
+    private function isJwtTokenExpired(string $token): bool
     {
-        $resp = Curl::get($this->getUrl('profile'), [], $token);
-        if($resp['HTTP_CODE']=== 200) return true;
-        return false;
-
-//        $payload =  base64_decode(explode('.', $token)[1]);
-//        preg_match('/"exp":(\d+)/', $payload, $matches);
-//
-//        return time() >= (int)$matches[1];
+        $parts = explode('.', $token);
+        if (count($parts) !== 3) return false;
+        $payload = base64_decode($parts[1]);
+        return preg_match('/"exp":(\d+)/', $payload, $matches) === 1
+            && time() >= (int)$matches[1];
     }
 }
