@@ -19,8 +19,8 @@ Router::post(
 Router::error(function(Request $request, Exception $exception)  {
     Router::response()->httpCode(200);
     $json = ['message' => $exception->getMessage()];
+    (new JsonManager(Helper::basePath().'/error.json'))->writeJson($json, true);
     Router::response()->json($json);
-    (new JsonManager(Helper::basePath().'/error.log'))->writeJson($json, true);
 });
 
 Router::start();
