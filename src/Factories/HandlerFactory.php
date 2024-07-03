@@ -6,6 +6,7 @@ use App\Contracts\DtoContract;
 use App\Handlers\Base\NotFoundHandler;
 use App\Handlers\Base\StartMenuHandler;
 use App\Handlers\Devices\DevicesHandler;
+use App\Handlers\Devices\RefreshDevicesHandler;
 use App\Handlers\Devices\SelectDeviceHandler;
 use App\Handlers\Handler;
 
@@ -17,6 +18,7 @@ class HandlerFactory
             StartMenuHandler::validate($dto) => new StartMenuHandler($dto),
             DevicesHandler::validate($dto) => new DevicesHandler($dto),
             SelectDeviceHandler::validate($dto) => new SelectDeviceHandler($dto),
+            RefreshDevicesHandler::validate($dto) => new RefreshDevicesHandler($dto),
             default => new NotFoundHandler($dto),
         };
     }

@@ -33,4 +33,5 @@ final class DeviceWorker extends Worker
 
         return $device;
     }
+
 }

@@ -2,37 +2,37 @@
 
 namespace App\Handlers\Auth;
 
+use App\Contracts\DtoContract;
 use App\Core\Helper;
 use App\Dto\UserDto;
 use App\Enums\State;
 use App\Enums\TelegramMethod;
 use App\Handlers\Handler;
-use App\Contracts\DtoContract;
-use App\Managers\StateManager;
-use App\Managers\UserManager;
+use App\Repositories\StateRepository;
+use App\Repositories\UserRepository;
 
 final readonly class LoginStateHandler extends Handler
 {
 
     private string $input;
     private UserDto $userDto;
-    private StateManager $stateManager;
+    private StateRepository $stateRepository;
 
     public static function validate(DtoContract $dto): bool
     {
-        return (new StateManager($dto->fromId))->isState();
+        return (new StateRepository($dto->fromId))->isState();
     }
 
     public function __construct(DtoContract $dto)
     {
         parent::__construct($dto);
-        $this->stateManager = new StateManager($dto->fromId);
-        $this->userDto = $this->userManager->read() ?? new UserDto();
+        $this->stateRepository = new StateRepository($dto->fromId);
+        $this->userDto = $this->userRepository->get() ?? new UserDto();
     }
 
     public function process(): void
     {
-        $state = $this->stateManager->getState();
+        $state = $this->stateRepository->get();
 
         if($state['state'] === State::InputUsername->value)
             $this->inputUsername($state['message_id']);
@@ -40,7 +40,7 @@ final readonly class LoginStateHandler extends Handler
             $this->inputPassword($state['message_id']);
         else return;
 
-        (new UserManager($this->fromId))->write($this->userDto);
+        (new UserRepository($this->fromId))->set($this->userDto);
     }
 
     private function inputUsername(int $messageId): void
@@ -54,13 +54,13 @@ final readonly class LoginStateHandler extends Handler
             'text' => 'Введите пароль',
         ]);
 
-        $this->stateManager->setState(State::InputPassword->value, $messageId);
+        $this->stateRepository->set(State::InputPassword->value, $messageId);
     }
 
     private function inputPassword(int $messageId): void
     {
         $this->userDto->password = Helper::encrypt($this->input);
-        $this->stateManager->delete();
+        $this->stateRepository->delete();
         $this->deleteMessage();
         $this->telegram->send(TelegramMethod::Edit, [
             'chat_id' => $this->fromId,

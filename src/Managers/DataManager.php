@@ -19,6 +19,6 @@ abstract class DataManager extends JsonManager
 
     private function getPath(int $userId): string
     {
-        return Helper::basePath($this->directory()) . '/' . $userId . '.json';
+        return Helper::basePath('data/' . $this->directory()) . '/' . $userId . '.json';
     }
 }

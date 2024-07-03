@@ -15,7 +15,7 @@ final readonly class StartHandler extends Handler
 
     public function process(): void
     {
-        $state = is_null($this->userManager->read())
+        $state = is_null($this->userRepository->get())
             ? State::Login
             : State::StartMenu;
 

@@ -3,12 +3,12 @@
 namespace App\Handlers\Auth;
 
 
+use App\Contracts\DtoContract;
 use App\Core\Telegram;
 use App\Dto\UserDto;
 use App\Enums\State;
 use App\Enums\TelegramMethod;
-use App\Contracts\DtoContract;
-use App\Managers\UserManager;
+use App\Repositories\UserRepository;
 use App\Workers\AuthWorker;
 
 final readonly class Auth
@@ -22,11 +22,11 @@ final readonly class Auth
 
     public function check(): bool
     {
-        $userManager = new UserManager($this->fromId);
+        $userManager = new UserRepository($this->fromId);
         //Авторизация пользователя
-        $userDto = $this->auth($userManager->read());
+        $userDto = $this->auth($userManager->get());
         if ($userDto) {
-            $userManager->write($userDto);
+            $userManager->set($userDto);
             return true;
         }
         $userManager->delete();
