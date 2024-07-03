@@ -4,7 +4,7 @@ namespace App\Dto\Http;
 
 use App\Contracts\DtoContract;
 
-class TextDto implements DtoContract
+readonly class TextDto implements DtoContract
 {
     public int $fromId;
     public string $data;

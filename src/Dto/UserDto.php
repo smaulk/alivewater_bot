@@ -1,35 +1,49 @@
 <?php
+
 namespace App\Dto;
 
-class AuthData
+readonly class UserDto
 {
-    public string $token = '';
-    public string $refreshToken = '';
-}
+    public function __construct(
+        public ?string  $username = null,
+        public ?string  $password = null,
+        public ?string  $uuid = null,
+        public AuthData $auth = new AuthData(),
+    ){}
 
-class UserDto
-{
-    public string $username = '';
-    public string $password = '';
-    public string $uuid = '';
-    public AuthData $auth;
-
-    public function __construct(){
-        $this->auth = new AuthData();
-    }
-
-    public function fromArray(array $data): UserDto
+    public static function fromArray(array $data): UserDto
     {
-        $this->username = $data['username'] ?? '';
-        $this->password = $data['password'] ?? '';
-        $this->uuid = $data['uuid'] ?? '';
-        $this->auth->token = $data['auth']['token'] ?? '' ;
-        $this->auth->refreshToken = $data['auth']['refreshToken'] ?? '' ;
-        return $this;
+        return new self(
+            $data['username'] ?? null,
+            $data['password'] ?? null,
+            $data['uuid'] ?? null,
+            new AuthData(
+                $data['auth']['token'] ?? null,
+                $data['auth']['refreshToken'] ?? null
+            ),
+        );
     }
 
     public function toArray(): array
     {
-        return (array) $this;
+        return [
+            'username' => $this->username,
+            'password' => $this->password,
+            'uuid' => $this->uuid,
+            'auth' => $this->auth->toArray(),
+        ];
+    }
+}
+
+readonly class AuthData
+{
+    public function __construct(
+        public ?string $token = null,
+        public ?string $refreshToken = null
+    ){}
+
+    public function toArray(): array
+    {
+        return (array)$this;
     }
 }

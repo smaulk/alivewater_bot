@@ -1,6 +1,10 @@
 <?php
 namespace App\Core;
 
+use DateTime;
+use DateTimeZone;
+use Exception;
+
 final class Helper
 {
     public static function basePath(string $path = null): string
@@ -41,5 +45,16 @@ final class Helper
         $encryptedData = substr($encryptedDataWithIv, $ivLength);
         // Дешифрование данных
         return openssl_decrypt($encryptedData, 'aes-256-cbc', $key, 0, $iv);
+    }
+
+    /**
+     * @throws Exception
+     */
+    public static function getDate(string $timestamp, string $format, string $timezone = 'UTC' ): string
+    {
+        $dt = new DateTime();
+        $dt->setTimezone(new DateTimeZone($timezone));
+        $dt->setTimestamp($timestamp);
+        return $dt->format($format);
     }
 }

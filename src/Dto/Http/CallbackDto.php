@@ -3,7 +3,7 @@ namespace App\Dto\Http;
 
 use App\Contracts\DtoContract;
 
-class CallbackDto implements DtoContract
+readonly class CallbackDto implements DtoContract
 {
     public int $fromId;
     public int $messageId;

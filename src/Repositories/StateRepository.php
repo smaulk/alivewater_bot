@@ -25,7 +25,7 @@ final class StateRepository extends DataManager
         ]);
     }
 
-    public function isState(): bool
+    public function exists(): bool
     {
         return !is_null($this->get());
     }

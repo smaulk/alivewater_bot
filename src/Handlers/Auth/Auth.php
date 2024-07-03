@@ -9,7 +9,7 @@ use App\Dto\UserDto;
 use App\Enums\State;
 use App\Enums\TelegramMethod;
 use App\Repositories\UserRepository;
-use App\Workers\AuthWorker;
+use App\Services\AuthService;
 
 final readonly class Auth
 {
@@ -22,14 +22,14 @@ final readonly class Auth
 
     public function check(): bool
     {
-        $userManager = new UserRepository($this->fromId);
+        $userRepository = new UserRepository($this->fromId);
         //Авторизация пользователя
-        $userDto = $this->auth($userManager->get());
+        $userDto = $this->auth($userRepository->get());
         if ($userDto) {
-            $userManager->set($userDto);
+            $userRepository->set($userDto);
             return true;
         }
-        $userManager->delete();
+        $userRepository->delete();
         return false;
 
     }
@@ -38,7 +38,7 @@ final readonly class Auth
     {
         return is_null($userDto)
             ? null
-            : (new AuthWorker($userDto))->auth();
+            : (new AuthService($userDto))->auth();
     }
 
     public function sendError(): void

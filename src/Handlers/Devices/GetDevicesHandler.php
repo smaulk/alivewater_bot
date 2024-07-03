@@ -6,7 +6,7 @@ use App\Contracts\DtoContract;
 use App\Enums\State;
 use App\Handlers\Handler;
 use App\Repositories\DevicesRepository;
-use App\Workers\UserWorker;
+use App\Services\UserService;
 
 final readonly class GetDevicesHandler extends DevicesHandler
 {
@@ -20,7 +20,7 @@ final readonly class GetDevicesHandler extends DevicesHandler
         $devicesRepository = new DevicesRepository($this->fromId);
         $devices = $devicesRepository->get();
         if (is_null($devices)) {
-            $devices = (new UserWorker($this->userRepository->get()))->getDevices();
+            $devices = (new UserService($this->userRepository->get()))->getDevices();
             $devicesRepository->set($devices);
         }
         return $devices;

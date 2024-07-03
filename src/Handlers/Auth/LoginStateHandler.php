@@ -15,19 +15,17 @@ final readonly class LoginStateHandler extends Handler
 {
 
     private string $input;
-    private UserDto $userDto;
     private StateRepository $stateRepository;
 
     public static function validate(DtoContract $dto): bool
     {
-        return (new StateRepository($dto->fromId))->isState();
+        return (new StateRepository($dto->fromId))->exists();
     }
 
     public function __construct(DtoContract $dto)
     {
         parent::__construct($dto);
         $this->stateRepository = new StateRepository($dto->fromId);
-        $this->userDto = $this->userRepository->get() ?? new UserDto();
     }
 
     public function process(): void
@@ -35,33 +33,35 @@ final readonly class LoginStateHandler extends Handler
         $state = $this->stateRepository->get();
 
         if($state['state'] === State::InputUsername->value)
-            $this->inputUsername($state['message_id']);
+        {
+            $this->sendInputPassword($state['message_id']);
+            $this->stateRepository->set(State::InputPassword->value, $state['message_id']);
+            $this->userRepository->set(new UserDto($this->input));
+        }
         else if($state['state'] === State::InputPassword->value)
-            $this->inputPassword($state['message_id']);
-        else return;
-
-        (new UserRepository($this->fromId))->set($this->userDto);
+        {
+            $this->sendSuccessInput($state['message_id']);
+            $this->stateRepository->delete();
+            $this->userRepository->set(new UserDto(
+                $this->userRepository->get()?->username ?? null,
+                Helper::encrypt($this->input)
+            ));
+        }
     }
 
-    private function inputUsername(int $messageId): void
+    private function sendInputPassword(int $messageId): void
     {
-        $this->userDto->username = $this->input;
-
-        $this->deleteMessage();
+        $this->deleteInputMessage();
         $this->telegram->send(TelegramMethod::Edit, [
             'chat_id' => $this->fromId,
             'message_id' => $messageId,
             'text' => 'Введите пароль',
         ]);
-
-        $this->stateRepository->set(State::InputPassword->value, $messageId);
     }
 
-    private function inputPassword(int $messageId): void
+    private function sendSuccessInput(int $messageId): void
     {
-        $this->userDto->password = Helper::encrypt($this->input);
-        $this->stateRepository->delete();
-        $this->deleteMessage();
+        $this->deleteInputMessage();
         $this->telegram->send(TelegramMethod::Edit, [
             'chat_id' => $this->fromId,
             'message_id' => $messageId,
@@ -82,7 +82,7 @@ final readonly class LoginStateHandler extends Handler
         ]);
     }
 
-    private function deleteMessage(): void
+    private function deleteInputMessage(): void
     {
         $this->telegram->send(TelegramMethod::Delete, [
             'chat_id' => $this->fromId,

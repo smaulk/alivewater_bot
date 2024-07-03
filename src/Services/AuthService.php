@@ -1,15 +1,16 @@
 <?php
 
-namespace App\Workers;
+namespace App\Services;
 
-use App\Core\Curl;
+use App\Core\Api;
 use App\Core\Helper;
+use App\Dto\AuthData;
 use App\Dto\UserDto;
 
-final class AuthWorker extends Worker
+final class AuthService extends Service
 {
 
-    protected function getPath(): string
+    protected function getMainRoute(): string
     {
         return "users";
     }
@@ -42,11 +43,16 @@ final class AuthWorker extends Worker
     {
         $resp = $this->loginRequest($dto);
         if ($resp['HTTP_CODE'] !== 200) return null;
-        $dto->uuid = $resp['User']['Id'];
-        $dto->auth->token = $resp['Token'];
-        $dto->auth->refreshToken = $resp['Refresh'];
 
-        return $dto;
+        return new UserDto(
+            $dto->username,
+            $dto->password,
+            $resp['User']['Id'],
+            new AuthData(
+                $resp['Token'],
+                $resp['Refresh']
+            )
+        );
     }
 
     /**
@@ -58,9 +64,16 @@ final class AuthWorker extends Worker
     {
         $resp = $this->refreshRequest($dto);
         if ($resp['HTTP_CODE'] !== 200) return $this->login($dto);
-        $dto->auth->token = $resp['Token'];
-        $dto->auth->refreshToken = $resp['Refresh'];
-        return $dto;
+
+        return new UserDto(
+            $dto->username,
+            $dto->password,
+            $dto->uuid,
+            new AuthData(
+                $resp['Token'],
+                $resp['Refresh']
+            )
+        );
     }
 
     /**
@@ -74,7 +87,7 @@ final class AuthWorker extends Worker
             'Username' => $dto->username,
             'Password' => Helper::decrypt($dto->password),
         ];
-        return Curl::post($this->getUrl('auth/signin'), $data);
+        return Api::post($this->getRoute('auth/signin'), $data);
     }
 
     /**
@@ -87,7 +100,7 @@ final class AuthWorker extends Worker
         $data = [
             'Refresh' => $dto->auth->refreshToken,
         ];
-        return Curl::post($this->getUrl('auth/refresh'), $data);
+        return Api::post($this->getRoute('auth/refresh'), $data);
     }
 
     /**

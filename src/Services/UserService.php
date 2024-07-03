@@ -1,24 +1,19 @@
 <?php
 
-namespace App\Workers;
+namespace App\Services;
 
-use App\Core\Curl;
-use App\Core\Helper;
-use App\Dto\UserDto;
-use App\Managers\JsonManager;
-use App\Repositories\DevicesRepository;
+use App\Core\Api;
 
-final class UserWorker extends Worker
+final class UserService extends Service
 {
-    protected function getPath(): string
+    protected function getMainRoute(): string
     {
         return $this->userDto->uuid;
     }
 
-
     public function getDevices(): array
     {
-        $resp = Curl::get($this->getUrl('devices'),[], $this->userDto->auth->token);
+        $resp = Api::get($this->getRoute('devices'),[], $this->userDto->auth->token);
         $devices = [];
         foreach ($resp['devices'] as $device) {
             $id = $device['Id'];

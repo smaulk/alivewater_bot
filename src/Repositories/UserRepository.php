@@ -17,7 +17,7 @@ final class UserRepository extends DataManager
         $data = $this->readJson();
         return is_null($data)
             ? null
-            : (new UserDto())->fromArray($data);
+            : UserDto::fromArray($data);
     }
 
     public function set(UserDto $userDto): void

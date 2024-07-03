@@ -2,9 +2,7 @@
 
 namespace App\Dto\Http;
 
-use App\Contracts\DtoContract;
-
-class ResultDto implements DtoContract
+readonly class ResultDto
 {
     public int $messageId;
 
