@@ -11,7 +11,7 @@ class UserDto
 {
     public string $username = '';
     public string $password = '';
-    public string $uid = '';
+    public string $uuid = '';
     public AuthData $auth;
 
     public function __construct(){
@@ -22,7 +22,7 @@ class UserDto
     {
         $this->username = $data['username'] ?? '';
         $this->password = $data['password'] ?? '';
-        $this->uid = $data['uid'] ?? '';
+        $this->uuid = $data['uuid'] ?? '';
         $this->auth->token = $data['auth']['token'] ?? '' ;
         $this->auth->refreshToken = $data['auth']['refreshToken'] ?? '' ;
         return $this;

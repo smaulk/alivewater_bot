@@ -42,7 +42,7 @@ final class AuthWorker extends Worker
     {
         $resp = $this->loginRequest($dto);
         if ($resp['HTTP_CODE'] !== 200) return null;
-        $dto->uid = $resp['User']['Id'];
+        $dto->uuid = $resp['User']['Id'];
         $dto->auth->token = $resp['Token'];
         $dto->auth->refreshToken = $resp['Refresh'];
 

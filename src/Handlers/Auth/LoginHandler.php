@@ -2,11 +2,11 @@
 
 namespace App\Handlers\Auth;
 
-use App\Dto\ResultDto;
+use App\Contracts\DtoContract;
+use App\Dto\Http\ResultDto;
 use App\Enums\State;
 use App\Handlers\Handler;
-use App\Contracts\DtoContract;
-use App\Managers\StateManager;
+use App\Repositories\StateRepository;
 
 final readonly class LoginHandler extends Handler
 {
@@ -23,7 +23,7 @@ final readonly class LoginHandler extends Handler
             'text'    => 'Введите имя пользователя',
         ]);
         $resp = new ResultDto($resp);
-        (new StateManager($this->fromId))->setState(State::InputUsername->value, $resp->messageId);
+        (new StateRepository($this->fromId))->set(State::InputUsername->value, $resp->messageId);
     }
 
     protected function parseDto(DtoContract $dto): void

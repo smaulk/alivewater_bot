@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto;
+namespace App\Dto\Http;
 
 use App\Contracts\DtoContract;
 
@@ -8,9 +8,9 @@ class ResultDto implements DtoContract
 {
     public int $messageId;
 
-    public function __construct(array $data)
+    public function __construct(array $body)
     {
-        $this->messageId = $data['result']['message_id'];
+        $this->messageId = $body['result']['message_id'];
         //echo json_encode($data);
     }
 }

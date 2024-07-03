@@ -2,15 +2,11 @@
 
 namespace App\Handlers;
 
-use App\Core\Telegram;
-use App\Dto\CallbackDto;
-use App\Dto\UserDto;
-use App\Enums\TelegramMethod;
 use App\Contracts\DtoContract;
-use App\Managers\StateManager;
-use App\Managers\UserManager;
-use App\Workers\AuthWorker;
-use Exception;
+use App\Core\Telegram;
+use App\Dto\Http\CallbackDto;
+use App\Enums\TelegramMethod;
+use App\Repositories\UserRepository;
 
 abstract readonly class Handler
 {
@@ -18,7 +14,7 @@ abstract readonly class Handler
     protected TelegramMethod $method;
     protected int $fromId;
     protected int $messageId;
-    protected UserManager $userManager;
+    protected UserRepository $userRepository;
 
 
     public function __construct(DtoContract $dto)
@@ -26,7 +22,7 @@ abstract readonly class Handler
         $this->telegram = new Telegram();
         $this->fromId = $dto->fromId;
         $this->messageId = $dto->messageId;
-        $this->userManager = new UserManager($dto->fromId);
+        $this->userRepository = new UserRepository($dto->fromId);
         $this->parseDto($dto);
         $this->setMethod($dto);
     }
