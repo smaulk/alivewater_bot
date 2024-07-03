@@ -5,7 +5,7 @@ namespace App\Factories;
 use App\Contracts\DtoContract;
 use App\Handlers\Base\NotFoundHandler;
 use App\Handlers\Base\StartMenuHandler;
-use App\Handlers\Devices\DevicesHandler;
+use App\Handlers\Devices\GetDevicesHandler;
 use App\Handlers\Devices\RefreshDevicesHandler;
 use App\Handlers\Devices\SelectDeviceHandler;
 use App\Handlers\Handler;
@@ -16,7 +16,7 @@ class HandlerFactory
     {
         return match (true) {
             StartMenuHandler::validate($dto) => new StartMenuHandler($dto),
-            DevicesHandler::validate($dto) => new DevicesHandler($dto),
+            GetDevicesHandler::validate($dto) => new GetDevicesHandler($dto),
             SelectDeviceHandler::validate($dto) => new SelectDeviceHandler($dto),
             RefreshDevicesHandler::validate($dto) => new RefreshDevicesHandler($dto),
             default => new NotFoundHandler($dto),

@@ -8,31 +8,18 @@ use App\Handlers\Handler;
 use App\Repositories\DevicesRepository;
 use App\Workers\UserWorker;
 
-final readonly class RefreshDevicesHandler extends Handler
+final readonly class RefreshDevicesHandler extends DevicesHandler
 {
-    private DevicesHandler $devicesHandler;
-
-    public function __construct(DtoContract $dto)
-    {
-        $this->devicesHandler = new DevicesHandler($dto);
-        parent::__construct($dto);
-    }
-
     public static function validate(DtoContract $dto): bool
     {
         $state = State::SelectDevice->value;
-        return $dto->data === $state.':refresh';
+        return $dto->data === $state . ':refresh';
     }
 
-    public function process(): void
+    protected function getDevices(): array
     {
         $devices = (new UserWorker($this->userRepository->get()))->getDevices();
         (new DevicesRepository($this->fromId))->set($devices);
-        $this->devicesHandler->process();
+        return $devices;
     }
-
-    protected function parseDto(DtoContract $dto): void
-    {
-    }
-
 }
