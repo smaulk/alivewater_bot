@@ -4,7 +4,7 @@ namespace App\Handlers;
 
 use App\Contracts\DtoContract;
 use App\Core\Telegram;
-use App\Dto\Http\CallbackDto;
+use App\Dto\Request\CallbackDto;
 use App\Enums\TelegramMethod;
 use App\Repositories\UserRepository;
 

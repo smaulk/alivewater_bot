@@ -5,18 +5,20 @@ use App\Enums\TelegramMethod;
 
 final class Telegram
 {
+    private const string TG_URL = 'https://api.telegram.org/bot';
+
     public function send(TelegramMethod $method, array $data): array
     {
         $uri = $this->getUri().$method->value;
         return Curl::post($uri, $data, [
-            'Content-type: application/json',
-            'Accept: application/json',
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
         ]);
     }
 
     private function getUri(): string
     {
         $token = Env::get('TG_TOKEN');
-        return "https://api.telegram.org/bot$token/";
+        return self::TG_URL.$token.'/';
     }
 }

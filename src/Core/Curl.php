@@ -10,7 +10,7 @@ final class Curl
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url,
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_HTTPHEADER => self::formatHeaders($headers),
             CURLOPT_RETURNTRANSFER => true,
             CURLOPT_POST => true,
             CURLOPT_POSTFIELDS => $data,
@@ -27,7 +27,7 @@ final class Curl
         $curl = curl_init();
         curl_setopt_array($curl, array(
             CURLOPT_URL => $url . http_build_query($data),
-            CURLOPT_HTTPHEADER => $headers,
+            CURLOPT_HTTPHEADER => self::formatHeaders($headers),
             CURLOPT_RETURNTRANSFER => true,
         ));
         $result = curl_exec($curl);
@@ -35,5 +35,14 @@ final class Curl
         $result = json_decode($result, true);
         $result['HTTP_CODE'] = curl_getinfo($curl, CURLINFO_HTTP_CODE);
         return $result;
+    }
+
+    private static function formatHeaders(array $headers): array
+    {
+        $formattedHeaders = [];
+        foreach ($headers as $key => $value) {
+            $formattedHeaders[] = "{$key}: {$value}";
+        }
+        return $formattedHeaders;
     }
 }

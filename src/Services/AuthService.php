@@ -87,7 +87,7 @@ final class AuthService extends Service
             'Username' => $dto->username,
             'Password' => Helper::decrypt($dto->password),
         ];
-        return Api::post($this->getRoute('auth/signin'), $data);
+        return $this->api->post($this->getRoute('auth/signin'), $data);
     }
 
     /**
@@ -100,7 +100,7 @@ final class AuthService extends Service
         $data = [
             'Refresh' => $dto->auth->refreshToken,
         ];
-        return Api::post($this->getRoute('auth/refresh'), $data);
+        return $this->api->post($this->getRoute('auth/refresh'), $data);
     }
 
     /**

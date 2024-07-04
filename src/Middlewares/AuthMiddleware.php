@@ -3,7 +3,7 @@
 namespace App\Middlewares;
 
 use App\Factories\AuthHandlerFactory;
-use App\Factories\DtoFactory;
+use App\Factories\RequestDtoFactory;
 use App\Handlers\Auth\Auth;
 use Exception;
 use Pecee\Http\Middleware\IMiddleware;
@@ -16,7 +16,7 @@ class AuthMiddleware implements IMiddleware
      */
     public function handle(Request $request): void
     {
-        $request->dto = DtoFactory::make($request);
+        $request->dto = RequestDtoFactory::make($request);
 
         $handler = AuthHandlerFactory::make($request->dto);
         if(!is_null($handler))

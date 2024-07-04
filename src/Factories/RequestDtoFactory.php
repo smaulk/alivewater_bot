@@ -3,12 +3,12 @@
 namespace App\Factories;
 
 use App\Contracts\DtoContract;
-use App\Dto\Http\CallbackDto;
-use App\Dto\Http\TextDto;
+use App\Dto\Request\CallbackDto;
+use App\Dto\Request\TextDto;
 use Exception;
 use Pecee\Http\Request;
 
-class DtoFactory
+class RequestDtoFactory
 {
 
     /**

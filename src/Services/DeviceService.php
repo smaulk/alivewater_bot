@@ -4,16 +4,18 @@ namespace App\Services;
 
 use App\Core\Api;
 use App\Core\Helper;
+use App\Dto\DeviceDto;
 use App\Dto\UserDto;
+use App\Factories\DeviceDtoFactory;
 use Exception;
 
 final class DeviceService extends Service
 {
     private string $deviceId;
 
-    public function __construct(UserDto $dto, string $deviceUuid)
+    public function __construct(UserDto $dto, string $deviceId)
     {
-        $this->deviceId = $deviceUuid;
+        $this->deviceId = $deviceId;
         parent::__construct($dto);
     }
 
@@ -25,18 +27,9 @@ final class DeviceService extends Service
     /**
      * @throws Exception
      */
-    public function getInfo(): array
+    public function getInfo(): DeviceDto
     {
-        $resp = Api::get($this->getRoute(), [], $this->userDto->auth->token);
-        $timezone = $resp['Info']['Timezone'];
-        $device['Coins'] = $resp['DeviceState']['Coins'];
-        $device['Address'] = $resp['Info']['Address'];
-        $timeEncash = $resp['DeviceState']['LastEncash']['Dts'];
-        $timeEncash = intval($timeEncash / 1000);
-        $device['LastEncash']['Date'] = Helper::getDate($timeEncash, 'Y-m-d H:i', $timezone);
-
-        $device['LastEncash']['Coins'] = $resp['DeviceState']['LastEncash']['Coins'];
-
-        return $device;
+        $resp = $this->api->get($this->getRoute());
+        return DeviceDtoFactory::make($resp);
     }
 }

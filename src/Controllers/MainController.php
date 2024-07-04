@@ -2,7 +2,7 @@
 
 namespace App\Controllers;
 
-use App\Factories\DtoFactory;
+use App\Factories\RequestDtoFactory;
 use App\Factories\HandlerFactory;
 use Exception;
 

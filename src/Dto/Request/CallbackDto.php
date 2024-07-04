@@ -1,5 +1,5 @@
 <?php
-namespace App\Dto\Http;
+namespace App\Dto\Request;
 
 use App\Contracts\DtoContract;
 

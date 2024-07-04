@@ -4,26 +4,35 @@ namespace App\Core;
 
 final class Api
 {
-    private static string $API_URL = "https://cabinet.api.alivewater.online/";
+    private const string API_URL = "https://cabinet.api.alivewater.online/";
+    private readonly ?string $TOKEN;
 
-    public static function get(string $route, $data, string $token = null): array
+    public function __construct(?string $TOKEN)
     {
-        return Curl::get(self::$API_URL.$route, $data, self::getHeaders($token));
+        $this->TOKEN = $TOKEN;
     }
 
-    public static function post(string $route, $data, string $token = null): array
+    public function get(string $route, $data = []): array
     {
-        return Curl::post(self::$API_URL.$route, $data, self::getHeaders($token));
+        return Curl::get(self::API_URL . $route, $data, $this->getHeaders());
     }
 
-    private static function getHeaders(string $token = null): array
+    public function post(string $route, $data = []): array
+    {
+        return Curl::post(self::API_URL . $route, $data, $this->getHeaders());
+    }
+
+    private function getHeaders(): array
     {
         $headers = [
-            'Content-type: application/json',
-            'Accept: application/json',
-            'User-Agent: Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
+            'Content-Type' => 'application/json',
+            'Accept' => 'application/json',
+            'User-Agent'   => 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/126.0.0.0 Safari/537.36',
         ];
-        if(!is_null($token)) $headers[] = 'Authorization: Bearer ' . $token;
+        if (!empty($this->TOKEN)) {
+            $headers['Authorization'] = 'Bearer ' . $this->TOKEN;
+        }
+
         return $headers;
     }
 }

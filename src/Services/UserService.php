@@ -2,7 +2,6 @@
 
 namespace App\Services;
 
-use App\Core\Api;
 
 final class UserService extends Service
 {
@@ -13,7 +12,7 @@ final class UserService extends Service
 
     public function getDevices(): array
     {
-        $resp = Api::get($this->getRoute('devices'),[], $this->userDto->auth->token);
+        $resp = $this->api->get($this->getRoute('devices'));
         $devices = [];
         foreach ($resp['devices'] as $device) {
             $id = $device['Id'];

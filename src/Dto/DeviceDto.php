@@ -2,26 +2,39 @@
 
 namespace App\Dto;
 
-class DeviceDto
+readonly class DeviceDto
 {
-    public string $uuid;
-    public string $address;
-    public int $coins;
-    public Encash $lastEncash;
-
-    public function __construct()
-    {
-        $this->lastEncash = new Encash();
-    }
+    public function __construct(
+        public string        $uuid,
+        public string        $address,
+        public int           $coins,
+        public int           $costPerLiter,
+        public CashOperation $lastEncash,
+        public CashOperation $lastSale,
+    ){}
 
     public function toArray(): array
     {
-        return (array) $this;
+        return [
+            'uuid' => $this->uuid,
+            'address' => $this->address,
+            'coins' => $this->coins,
+            'costPerLiter' => $this->costPerLiter,
+            'lastEncash' => $this->lastEncash->toArray(),
+            'lastSale' => $this->lastSale->toArray(),
+        ];
     }
 }
 
-class Encash
+readonly class CashOperation
 {
-    public string $date;
-    public int $coins;
+    public function __construct(
+        public string $date,
+        public int    $amount,
+    ){}
+
+    public function toArray(): array
+    {
+        return (array)$this;
+    }
 }

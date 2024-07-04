@@ -3,7 +3,7 @@
 namespace App\Handlers\Auth;
 
 use App\Contracts\DtoContract;
-use App\Dto\Http\ResultDto;
+use App\Dto\ResultDto;
 use App\Enums\State;
 use App\Handlers\Handler;
 use App\Repositories\StateRepository;

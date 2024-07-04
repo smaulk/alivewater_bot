@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Dto\Http;
+namespace App\Dto;
 
 readonly class ResultDto
 {

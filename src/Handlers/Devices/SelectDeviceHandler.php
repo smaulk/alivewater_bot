@@ -24,18 +24,24 @@ final readonly class SelectDeviceHandler extends Handler
      */
     public function process(): void
     {
-        $device = (new DeviceService($this->userRepository->get(), $this->uuid))->getInfo();
+        $deviceDto = (new DeviceService(
+            $this->userRepository->get(), $this->uuid))
+            ->getInfo();
 
-        $address = $device['Address'];
-        $coins = $device['Coins'];
-        $encashDate = $device['LastEncash']['Date'];
-        $encashCoins = $device['LastEncash']['Coins'];
+        $lastEncahs = $deviceDto->lastEncash;
+        $lastSale = $deviceDto->lastSale;
 
         $text = <<<TEXT
-Адрес: $address
-Количество монет: $coins тг.
-Последняя инкасация:
-$encashDate - $encashCoins тг.
+📌Адрес: 
+$deviceDto->address
+💲Цена за литр: $deviceDto->costPerLiter тг.
+
+💰Количество монет: $deviceDto->coins тг.
+💸Последняя продажа:
+$lastSale->date - $lastSale->amount тг.
+
+🚚Последняя инкасация:
+$lastEncahs->date - $lastEncahs->amount тг.
 TEXT;
 
         $this->telegram->send($this->method, [
