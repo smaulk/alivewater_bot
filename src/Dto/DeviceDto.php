@@ -11,9 +11,7 @@ readonly class DeviceDto
         public int           $costPerLiter,
         public CashOperation $lastEncash,
         public Sale $lastSale,
-    )
-    {
-    }
+    ){}
 
     public function toArray(): array
     {
