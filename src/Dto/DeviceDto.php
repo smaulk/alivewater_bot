@@ -10,8 +10,10 @@ readonly class DeviceDto
         public int           $coins,
         public int           $costPerLiter,
         public CashOperation $lastEncash,
-        public CashOperation $lastSale,
-    ){}
+        public Sale $lastSale,
+    )
+    {
+    }
 
     public function toArray(): array
     {
@@ -31,6 +33,20 @@ readonly class CashOperation
     public function __construct(
         public string $date,
         public int    $amount,
+    ){}
+
+    public function toArray(): array
+    {
+        return (array)$this;
+    }
+}
+
+readonly class Sale
+{
+    public function __construct(
+        public string $date,
+        public int    $amount,
+        public float  $volume,
     ){}
 
     public function toArray(): array

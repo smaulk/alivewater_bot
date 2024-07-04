@@ -5,6 +5,7 @@ namespace App\Factories;
 use App\Core\Helper;
 use App\Dto\CashOperation;
 use App\Dto\DeviceDto;
+use App\Dto\Sale;
 use Exception;
 
 class DeviceDtoFactory
@@ -31,9 +32,10 @@ class DeviceDtoFactory
                 Helper::getDate($timeLastEncash, 'Y-m-d H:i', $timezone),
                 $data['DeviceState']['LastEncash']['Coins'],
             ),
-            new CashOperation(
+            new Sale(
                 Helper::getDate($timeLastSale, 'Y-m-d H:i', $timezone),
                 $data['DeviceState']['LastSale']['Amount'],
+                $data['DeviceState']['LastSale']['Volume'],
             )
         );
     }

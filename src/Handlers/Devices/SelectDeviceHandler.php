@@ -38,7 +38,7 @@ $deviceDto->address
 
 💰Количество монет: $deviceDto->coins тг.
 💸Последняя продажа:
-$lastSale->date - $lastSale->amount тг.
+$lastSale->date - $lastSale->amount тг. / $lastSale->volume л
 
 🚚Последняя инкасация:
 $lastEncahs->date - $lastEncahs->amount тг.
