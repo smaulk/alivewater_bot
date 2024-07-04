@@ -12,7 +12,7 @@ final readonly class GetDevicesHandler extends DevicesHandler
 {
     public static function validate(DtoContract $dto): bool
     {
-        return $dto->data === State::Devices->value;
+        return $dto->data === State::DeviceList->value;
     }
 
     protected function getDevices(): array

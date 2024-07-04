@@ -32,7 +32,7 @@ final readonly class StartMenuHandler extends Handler
     private function getMenuButtons(): array
     {
         return [
-            ['text' => State::Devices->value],
+            ['text' => State::DeviceList->value],
         ];
     }
 

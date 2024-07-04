@@ -7,6 +7,6 @@ enum State: string
     case Login = "Войти в аккаунт";
     case InputUsername = "InputUsername";
     case InputPassword = "InputPassword";
-    case Devices = "Посмотреть аппараты";
+    case DeviceList = "Выбрать аппарат";
     case SelectDevice = "sdv";
 }
