@@ -21,7 +21,7 @@ final readonly class StartMenuHandler extends Handler
             'text'    => 'Выберите команду из меню',
             'reply_markup' => [
                 'keyboard'          => [
-                    $this->getMenuButtons(),
+                    ...$this->getMenuButtons(),
                 ],
                 'one_time_keyboard' => true,
                 'resize_keyboard'   => true,
@@ -32,7 +32,8 @@ final readonly class StartMenuHandler extends Handler
     private function getMenuButtons(): array
     {
         return [
-            ['text' => State::DeviceList->value],
+            [['text' => State::DeviceList->value]],
+            [['text' => State::DevicesInfo->value]],
         ];
     }
 
