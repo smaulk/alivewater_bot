@@ -50,11 +50,23 @@ final class Helper
     /**
      * @throws Exception
      */
-    public static function getDate(string $timestamp, string $format, string $timezone = 'UTC' ): string
+    public static function getDate(string $timestamp, string $format = DATE_ATOM, string $timezone = 'UTC' ): string
     {
         $dt = new DateTime();
         $dt->setTimezone(new DateTimeZone($timezone));
         $dt->setTimestamp($timestamp);
+        return $dt->format($format);
+    }
+
+
+    /**
+     * @throws Exception
+     */
+    public static function getDateFromDays(int $days, string $format = DATE_ATOM, string $timezone = 'UTC',): string
+    {
+        $dt = new DateTime('now', new DateTimeZone($timezone));
+        $dt->modify("$days days");
+        $dt->setTime(0, 0, 0); // Установка времени на начало дня
         return $dt->format($format);
     }
 }

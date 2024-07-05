@@ -2,18 +2,20 @@
 
 namespace App\Services;
 
-use App\Core\Api;
 use App\Core\Helper;
-use App\Dto\DeviceDto;
+use App\Dto\SaleDto;
+use App\Dto\SumDto;
 use App\Dto\UserDto;
-use App\Factories\DeviceDtoFactory;
+use App\Enums\Currency;
+use App\Factories\SaleDtoFactory;
+use App\Factories\SumDtoFactory;
 use Exception;
 
-final class DeviceService extends Service
+class DeviceService extends Service
 {
     private string $deviceId;
 
-    public function __construct(UserDto $dto, string $deviceId)
+    public function __construct(UserDto $dto, $deviceId)
     {
         $this->deviceId = $deviceId;
         parent::__construct($dto);
@@ -21,15 +23,42 @@ final class DeviceService extends Service
 
     protected function getMainRoute(): string
     {
-        return 'devices/' . $this->deviceId;
+        return 'device/' . $this->deviceId;
     }
 
     /**
      * @throws Exception
      */
-    public function getInfo(): DeviceDto
+    public function getSalesToday(): array
     {
-        $resp = $this->api->get($this->getRoute());
-        return DeviceDtoFactory::make($resp);
+        $resp = $this->api->get($this->getRoute('sales'), [
+            'deviceId' => $this->deviceId,
+            'limit' => 50,
+            'from' => Helper::getDateFromDays(0),
+            'to' => Helper::getDateFromDays(1)
+        ]);
+
+        $data['Currency'] = Currency::get($resp['Currency']['Code']);
+        foreach ($resp['Items'] as $device) {
+            $data['Sales'][] = SaleDtoFactory::make($device);
+        }
+
+        return $data;
     }
+
+    /**
+     * @throws Exception
+     */
+    public function getSumToday(): SumDto
+    {
+        $resp = $this->api->get($this->getRoute('sales/sum'), [
+            'deviceId' => $this->deviceId,
+            'limit' => 50,
+            'from' => Helper::getDateFromDays(0),
+            'to' => Helper::getDateFromDays(1)
+        ]);
+
+        return SumDtoFactory::make($resp);
+    }
+
 }

@@ -6,7 +6,7 @@ use App\Contracts\DtoContract;
 use App\Enums\State;
 use App\Handlers\Handler;
 
-abstract readonly class DevicesHandler extends Handler
+abstract readonly class DevicesListHandler extends Handler
 {
     public function process(): void
     {

@@ -3,6 +3,10 @@
 namespace App\Services;
 
 
+use App\Dto\DeviceDto;
+use App\Factories\DeviceDtoFactory;
+use Exception;
+
 final class UserService extends Service
 {
     protected function getMainRoute(): string
@@ -10,7 +14,21 @@ final class UserService extends Service
         return $this->userDto->uuid;
     }
 
-    public function getDevices(): array
+    /**
+     * @throws Exception
+     */
+    public function getDevicesDto(): array
+    {
+        $resp = $this->api->get($this->getRoute('devices'));
+        $devices = [];
+        foreach ($resp['devices'] as $device) {
+            $devices[] = DeviceDtoFactory::make($device);
+        }
+        return $devices;
+    }
+
+
+    public function getDevicesId(): array
     {
         $resp = $this->api->get($this->getRoute('devices'));
         $devices = [];

@@ -24,9 +24,13 @@ final class Curl
 
     public static function get(string $url, array $data, array $headers = []): array
     {
+        $data = empty($data)
+            ? null
+            : '?' . http_build_query($data);
+
         $curl = curl_init();
         curl_setopt_array($curl, array(
-            CURLOPT_URL => $url . http_build_query($data),
+            CURLOPT_URL => $url . $data,
             CURLOPT_HTTPHEADER => self::formatHeaders($headers),
             CURLOPT_RETURNTRANSFER => true,
         ));
