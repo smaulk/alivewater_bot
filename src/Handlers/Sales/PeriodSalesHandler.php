@@ -55,14 +55,6 @@ TEXT;
             'chat_id' => $this->fromId,
             'message_id' => $this->messageId,
             'text' => $text,
-            'reply_markup' => [
-                'inline_keyboard' => [
-                    [[
-                        'text' => 'Вернуться',
-                        'callback_data' => State::Sales->value,
-                    ]]
-                ],
-            ],
         ];
 
         if (!empty($sales['Next'])) {
@@ -72,6 +64,11 @@ TEXT;
                 'callback_data' => $nextCallback,
             ]];
         }
+
+        $tgData['reply_markup']['inline_keyboard'][] = [[
+            'text' => 'Выбрать период',
+            'callback_data' => State::Sales->value,
+        ]];
 
         $this->telegram->send($this->method, $tgData);
 

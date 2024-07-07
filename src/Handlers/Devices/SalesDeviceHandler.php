@@ -61,7 +61,7 @@ TEXT;
             'reply_markup' => [
                 'inline_keyboard' => [
                     [[
-                        'text' => 'Вернуться',
+                        'text' => 'Назад к аппарату',
                         'callback_data' => State::SelectDevice->value . ':' . $this->deviceId,
                     ]]
                 ],
