@@ -12,5 +12,5 @@ enum State: string
     case SelectDevice = "sdv";
     case DeviceSales = "dvsl";
     case Sales = "Продажи";
-    case PeriodSales = "prsl";
+    case PeriodSales = "psl";
 }
