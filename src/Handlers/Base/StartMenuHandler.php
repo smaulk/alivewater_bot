@@ -34,6 +34,7 @@ final readonly class StartMenuHandler extends Handler
         return [
             [['text' => State::DeviceList->value]],
             [['text' => State::DevicesInfo->value]],
+            [['text' => State::Sales->value]],
         ];
     }
 
