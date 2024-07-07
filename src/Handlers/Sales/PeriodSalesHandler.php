@@ -20,7 +20,7 @@ final readonly class PeriodSalesHandler extends Handler
     {
         $state = State::PeriodSales->value;
         return preg_match(
-                "/^$state:(\d+)(?::([a-zA-Z\d]+))?$/",
+                "/^$state:\d+(?::[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}\.\d+)?$/",
                 $dto->data) === 1;
     }
 
@@ -32,8 +32,6 @@ final readonly class PeriodSalesHandler extends Handler
         $userService = new UserService($this->userRepository->get());
         $sales = $userService->getSales($this->period, $this->next);
         $sumDto = $userService->getSum($this->period);
-
-        $next = $sales['Next'];
 
         $currency = $sumDto->currency;
         $coinsPercent = intval(($sumDto->coins / $sumDto->amount) * 100);
@@ -52,23 +50,30 @@ TEXT;
             $text .= $this->getText($sale, $currency);
         }
 
-        $this->telegram->send($this->method, [
+
+        $tgData = [
             'chat_id' => $this->fromId,
             'message_id' => $this->messageId,
             'text' => $text,
             'reply_markup' => [
                 'inline_keyboard' => [
                     [[
-                        'text' => 'Следующие',
-                        'callback_data' => State::PeriodSales->value . ':' . $this->period . ':' . $next
-                    ]],
-                    [[
                         'text' => 'Вернуться',
                         'callback_data' => State::Sales->value,
                     ]]
                 ],
             ],
-        ]);
+        ];
+
+        if (!empty($sales['Next'])) {
+            $nextCallback = State::PeriodSales->value . ':' . $this->period . ':' . $sales['Next'];
+            $tgData['reply_markup']['inline_keyboard'][] = [[
+                'text' => 'Следующие',
+                'callback_data' => $nextCallback,
+            ]];
+        }
+
+        $this->telegram->send($this->method, $tgData);
 
     }
 
@@ -76,7 +81,7 @@ TEXT;
     {
         $data = explode(':', $dto->data);
         $this->period = $data[1];
-         $this->next = $data[2] ?? null;
+        $this->next = $data[2] ?? null;
     }
 
     private function getText(SaleDto $dto, Currency $currency): string

@@ -64,18 +64,34 @@ final class UserService extends Service
         $data = [
             'userId' => $this->userDto->uuid,
             'limit' => 10,
-            'from' => Helper::getDateFromDays(-$period+1),
+            'from' => Helper::getDateFromDays(-$period + 1),
             'to' => Helper::getDateFromDays(1),
         ];
-        if(!is_null($next)) $data['next'] = $next;
+
+        if (!is_null($next)) {
+            [$pk, $sk] = explode('.', $next);
+            $nextArr = [
+                'pk' => 'SL#' . $pk,
+                'sk_gspk' => $sk,
+                'gspk' => $this->userDto->uuid,
+                'gssk3' => $sk,
+            ];
+            $data['next'] = base64_encode(json_encode($nextArr));
+        }
+
 
         $resp = $this->api->get($this->getRoute('sales'), $data);
-        $data['Next'] = $resp['Next'];
         $data['Currency'] = Currency::get($resp['Currency']['Code']);
 
-        foreach ($resp['Items'] as $sale)
-        {
+        foreach ($resp['Items'] as $sale) {
             $data['Sales'][] = SaleDtoFactory::make($sale);
+        }
+
+        if(!empty($resp['Next']))
+        {
+            $nextDecode = json_decode(base64_decode($resp['Next']), true);
+            $nextStr = substr($nextDecode['pk'], 3) . '.' . $nextDecode['sk_gspk'];
+            $data['Next'] = $nextStr;
         }
 
         return $data;
@@ -88,7 +104,7 @@ final class UserService extends Service
     {
         $resp = $this->api->get($this->getRoute('sales/sum'), [
             'userId' => $this->userDto->uuid,
-            'from' => Helper::getDateFromDays(-$period+1),
+            'from' => Helper::getDateFromDays(-$period + 1),
             'to' => Helper::getDateFromDays(1),
         ]);
 
