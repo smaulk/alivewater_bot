@@ -11,6 +11,8 @@ use App\Handlers\Devices\RefreshDevicesListHandler;
 use App\Handlers\Devices\SalesDeviceHandler;
 use App\Handlers\Devices\SelectDeviceHandler;
 use App\Handlers\Handler;
+use App\Handlers\Sales\PeriodSalesHandler;
+use App\Handlers\Sales\SalesHandler;
 
 class HandlerFactory
 {
@@ -23,6 +25,8 @@ class HandlerFactory
             RefreshDevicesListHandler::validate($dto) => new RefreshDevicesListHandler($dto),
             DevicesInfoHandler::validate($dto) => new DevicesInfoHandler($dto),
             SalesDeviceHandler::validate($dto) => new SalesDeviceHandler($dto),
+            SalesHandler::validate($dto) => new SalesHandler($dto),
+            PeriodSalesHandler::validate($dto) => new PeriodSalesHandler($dto),
             default => new NotFoundHandler($dto),
         };
     }

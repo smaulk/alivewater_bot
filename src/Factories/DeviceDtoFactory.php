@@ -33,14 +33,15 @@ class DeviceDtoFactory
             $data['DeviceState']['Coins'],
             $data['Info']['CostPerLiter'],
             new CashOperation(
-                Helper::getDate($timestampLastEncash, 'Y-m-d H:i', $timezone),
+                Helper::getDate($timestampLastEncash, 'Y.m.d H:i', $timezone),
                 $data['DeviceState']['LastEncash']['Coins'],
             ),
             new SaleDto(
-                Helper::getDate($timestampLastSale, 'Y-m-d H:i', $timezone),
+                Helper::getDate($timestampLastSale, 'Y.m.d H:i', $timezone),
                 $data['DeviceState']['LastSale']['Amount'],
                 $data['DeviceState']['LastSale']['Volume'],
                 $saleType,
+                $data['Info']['Address'],
             )
         );
     }

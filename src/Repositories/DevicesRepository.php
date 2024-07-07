@@ -21,4 +21,10 @@ final class DevicesRepository extends DataManager
     {
         $this->writeJson($data);
     }
+
+    public function getAddressById(string $id): ?string
+    {
+        $data = $this->readJson();
+        return $data[$id] ?? null;
+    }
 }

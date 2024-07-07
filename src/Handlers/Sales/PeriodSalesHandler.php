@@ -1,25 +1,26 @@
 <?php
 
-namespace App\Handlers\Devices;
+namespace App\Handlers\Sales;
 
 use App\Contracts\DtoContract;
 use App\Dto\SaleDto;
 use App\Enums\Currency;
 use App\Enums\State;
 use App\Handlers\Handler;
-use App\Repositories\DevicesRepository;
-use App\Services\DeviceService;
+use App\Services\UserService;
 use Exception;
 
-final readonly class SalesDeviceHandler extends Handler
+final readonly class PeriodSalesHandler extends Handler
 {
-    private string $deviceId;
+
+    private int $period;
+    private ?string $next;
 
     public static function validate(DtoContract $dto): bool
     {
-        $state = State::DeviceSales->value;
+        $state = State::PeriodSales->value;
         return preg_match(
-                "/^$state:[a-f0-9]{8}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{4}-[a-f0-9]{12}$/",
+                "/^$state:(\d+)(?::([a-zA-Z\d]+))?$/",
                 $dto->data) === 1;
     }
 
@@ -28,25 +29,22 @@ final readonly class SalesDeviceHandler extends Handler
      */
     public function process(): void
     {
-        $address = (new DevicesRepository($this->fromId))->getAddressById($this->deviceId);
-        $limit = 10;
-        $deviceService = new DeviceService($this->userRepository->get(), $this->deviceId);
-        $sales = $deviceService->getSalesToday($limit);
-        $sumDto = $deviceService->getSumToday();
+        $userService = new UserService($this->userRepository->get());
+        $sales = $userService->getSales($this->period, $this->next);
+        $sumDto = $userService->getSum($this->period);
+
+        $next = $sales['Next'];
 
         $currency = $sumDto->currency;
         $coinsPercent = intval(($sumDto->coins / $sumDto->amount) * 100);
         $mobileAppPercent = 100 - $coinsPercent;
 
         $text = <<<TEXT
-📌Адрес:
-$address
-
-🧮 Всего за сегодня  $sumDto->amount $currency->value | $sumDto->litres л
+🧮 Всего за $this->period дней  $sumDto->amount $currency->value | $sumDto->litres л
 🪙 Монет: $sumDto->coins $currency->value ($coinsPercent%) 
 📱 QR: $sumDto->mobileApp $currency->value ($mobileAppPercent%)
 
-Последние $limit продаж:
+Продажи:
 
 TEXT;
 
@@ -61,8 +59,12 @@ TEXT;
             'reply_markup' => [
                 'inline_keyboard' => [
                     [[
+                        'text' => 'Следующие',
+                        'callback_data' => State::PeriodSales->value . ':' . $this->period . ':' . $next
+                    ]],
+                    [[
                         'text' => 'Вернуться',
-                        'callback_data' => State::SelectDevice->value . ':' . $this->deviceId,
+                        'callback_data' => State::Sales->value,
                     ]]
                 ],
             ],
@@ -72,7 +74,9 @@ TEXT;
 
     protected function parseDto(DtoContract $dto): void
     {
-        [, $this->deviceId] = explode(':', $dto->data);
+        $data = explode(':', $dto->data);
+        $this->period = $data[1];
+         $this->next = $data[2] ?? null;
     }
 
     private function getText(SaleDto $dto, Currency $currency): string
@@ -80,6 +84,7 @@ TEXT;
         $type = $dto->type;
         return <<<TEXT
 
+📌Адрес: $dto->address
 🛒 Тип: $type->value
 📅 Дата: $dto->date
 💸 Сумма: $dto->amount $currency->value

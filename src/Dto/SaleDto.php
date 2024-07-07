@@ -11,6 +11,7 @@ readonly class SaleDto
         public int      $amount,
         public float    $litres,
         public SaleType $type,
+        public ?string   $address,
     )
     {
     }

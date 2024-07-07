@@ -18,7 +18,8 @@ class SaleDtoFactory
             $data['DeviceLocalTime'],
             $data['Amount'],
             $data['Litres'],
-            $type
+            $type,
+            $data['Address'] ?? null
         );
     }
 }

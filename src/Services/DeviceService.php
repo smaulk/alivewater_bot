@@ -29,16 +29,17 @@ class DeviceService extends Service
     /**
      * @throws Exception
      */
-    public function getSalesToday(): array
+    public function getSalesToday(?int $limit = 10): array
     {
         $resp = $this->api->get($this->getRoute('sales'), [
             'deviceId' => $this->deviceId,
-            'limit' => 50,
+            'limit' => $limit,
             'from' => Helper::getDateFromDays(0),
             'to' => Helper::getDateFromDays(1)
         ]);
 
         $data['Currency'] = Currency::get($resp['Currency']['Code']);
+        $data['Next'] = $resp['Next'];
         foreach ($resp['Items'] as $device) {
             $data['Sales'][] = SaleDtoFactory::make($device);
         }
