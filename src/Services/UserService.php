@@ -64,13 +64,13 @@ final class UserService extends Service
         $data = [
             'userId' => $this->userDto->uuid,
             'limit' => 10,
-            'from' => Helper::getDateFromDays(-$period),
-            'to' => Helper::getDateFromDays(0),
+            'from' => Helper::getDateFromDays(-$period+1),
+            'to' => Helper::getDateFromDays(1),
         ];
         if(!is_null($next)) $data['next'] = $next;
 
         $resp = $this->api->get($this->getRoute('sales'), $data);
-
+        $data['Next'] = $resp['Next'];
         $data['Currency'] = Currency::get($resp['Currency']['Code']);
 
         foreach ($resp['Items'] as $sale)
@@ -88,8 +88,8 @@ final class UserService extends Service
     {
         $resp = $this->api->get($this->getRoute('sales/sum'), [
             'userId' => $this->userDto->uuid,
-            'from' => Helper::getDateFromDays(-$period),
-            'to' => Helper::getDateFromDays(0),
+            'from' => Helper::getDateFromDays(-$period+1),
+            'to' => Helper::getDateFromDays(1),
         ]);
 
         return SumDtoFactory::make($resp);
